@@ -1,0 +1,117 @@
+# =====================================
+# Python / Flask backend
+# =====================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Flask instance folder
+instance/
+*.db
+*.sqlite3
+
+# Environment variables
+*.env
+.env.*
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Logs
+*.log
+logs/
+*.pid
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# =====================================
+# Node / React frontend
+# =====================================
+
+# Dependencies
+node_modules/
+
+# Build output
+build/
+dist/
+public/static/
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor folders
+.vscode/
+.idea/
+
+# Misc
+.DS_Store
+Thumbs.db
+
+# =====================================
+# OS-specific
+# =====================================
+
+# macOS
+*.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =====================================
+# Optional: Docker / VSCode / etc
+# =====================================
+
+# Docker
+docker-compose.override.yml
+*.pid
+*.seed
+*.bak
+
+# VSCode local settings
+.vscode/
+
+# PyCharm / IntelliJ
+.idea/
+
+# =====================================
+# End of file
+# =====================================
