@@ -1,12 +1,12 @@
 import React from "react"
 
-const ContactList = ({ contacts, updateContact, updateCallback }) => {
+const ServerList = ({ servers, updateServer, updateCallback }) => {
     const onDelete = async (id) => {
         try {
             const options = {
                 method: "DELETE"
             }
-            const response = await fetch(`http://127.0.0.1:5000/delete_contact/${id}`, options)
+            const response = await fetch(`http://127.0.0.1:5000/delete_server/${id}`, options)
             if (response.status === 200) {
                 updateCallback()
             } else {
@@ -18,7 +18,7 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
     }
 
     return <div>
-        <h2>Contacts</h2>
+        <h2>Servers</h2>
         <table>
             <thead>
                 <tr>
@@ -29,14 +29,14 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                 </tr>
             </thead>
             <tbody>
-                {contacts.map((contact) => (
-                    <tr key={contact.id}>
-                        <td>{contact.firstName}</td>
-                        <td>{contact.lastName}</td>
-                        <td>{contact.email}</td>
+                {servers.map((server) => (
+                    <tr key={server.id}>
+                        <td>{server.firstName}</td>
+                        <td>{server.lastName}</td>
+                        <td>{server.email}</td>
                         <td>
-                            <button onClick={() => updateContact(contact)}>Update</button>
-                            <button onClick={() => onDelete(contact.id)}>Delete</button>
+                            <button onClick={() => updateServer(server)}>Update</button>
+                            <button onClick={() => onDelete(server.id)}>Delete</button>
                         </td>
                     </tr>
                 ))}
@@ -45,4 +45,4 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
     </div>
 }
 
-export default ContactList
+export default ServerList

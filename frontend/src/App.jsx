@@ -1,51 +1,51 @@
 import { useState, useEffect } from "react";
-import ContactList from "./ContactList";
+import ServerList from "./ServerList";
 import "./App.css";
-import ContactForm from "./ContactForm";
+import ServerForm from "./ServerForm";
 
 function App() {
-  const [contacts, setContacts] = useState([]);
+  const [servers, setServers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentContact, setCurrentContact] = useState({})
+  const [currentServer, setCurrentServer] = useState({})
 
   useEffect(() => {
-    fetchContacts()
+    fetchServers()
   }, []);
 
-  const fetchContacts = async () => {
-    const response = await fetch("http://127.0.0.1:5000/contacts");
+  const fetchServers = async () => {
+    const response = await fetch("http://127.0.0.1:5000/servers");
     const data = await response.json();
-    setContacts(data.contacts);
+    setServers(data.servers);
   };
 
   const closeModal = () => {
     setIsModalOpen(false)
-    setCurrentContact({})
+    setCurrentServer({})
   }
 
   const openCreateModal = () => {
     if (!isModalOpen) setIsModalOpen(true)
   }
 
-  const openEditModal = (contact) => {
+  const openEditModal = (server) => {
     if (isModalOpen) return
-    setCurrentContact(contact)
+    setCurrentServer(server)
     setIsModalOpen(true)
   }
 
   const onUpdate = () => {
     closeModal()
-    fetchContacts()
+    fetchServers()
   }
 
   return (
     <>
-      <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
-      <button onClick={openCreateModal}>Create New Contact</button>
+      <ServerList servers={servers} updateServer={openEditModal} updateCallback={onUpdate} />
+      <button onClick={openCreateModal}>Create New Server</button>
       {isModalOpen && <div className="modal">
         <div className="modal-content">
           <span className="close" onClick={closeModal}>&times;</span>
-          <ContactForm existingContact={currentContact} updateCallback={onUpdate} />
+          <ServerForm existingServer={currentServer} updateCallback={onUpdate} />
         </div>
       </div>
       }
