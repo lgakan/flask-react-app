@@ -21,21 +21,41 @@ ChartJS.register(
     Legend
 );
 
-const ServerGraph = ({ graphData }) => {
+const ServerGraph = ({ dataPoints, onPointClick }) => {
+    const handleChartClick = (event, elements) => {
+        if (elements.length > 0) {
+            const dataIndex = elements[0].index;
+            onPointClick(dataPoints[dataIndex]);
+        }
+    };
+    // Format the timestamp for better readability on the X-axis
+    const formattedLabels = dataPoints.map(d => new Date(d.timestamp).toLocaleTimeString());
+
     const data = {
-        labels: graphData?.labels || [], // Labels for X-axis from props
+        labels: formattedLabels,
         datasets: [
             {
-                label: 'Server Usage Score',
-                data: graphData?.data || [], // Data for Y-axis from props
+                label: 'CPU Usage (%)',
+                data: dataPoints.map(d => d.cpuUsage),
                 fill: false,
-                borderColor: 'rgb(75, 192, 192)',
+                borderColor: 'rgb(75, 192, 192)', // A nice teal color
+                tension: 0.1,
+            },
+            {
+                label: 'Memory Usage (%)',
+                data: dataPoints.map(d => d.memoryUsage),
+                fill: false,
+                borderColor: 'rgb(255, 99, 132)', // A nice red color
                 tension: 0.1,
             },
         ],
     };
 
-    return <div style={{ width: '600px', margin: '50px auto' }}><Line data={data} /></div>;
+    const options = {
+        onClick: handleChartClick,
+    };
+
+    return <div style={{ width: '600px', margin: '50px auto' }}><Line data={data} options={options} /></div>;
 };
 
 export default ServerGraph;

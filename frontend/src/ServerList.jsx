@@ -23,18 +23,18 @@ const ServerList = ({ servers, updateServer, updateCallback }) => {
         <table>
             <thead>
                 <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
+                    <th>Name</th>
+                    <th>IP Address</th>
+                    <th>User ID</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {servers.map((server) => (
                     <tr key={server.id}>
-                        <td>{server.firstName}</td>
-                        <td>{server.lastName}</td>
-                        <td>{server.email}</td>
+                        <td>{server.name}</td>
+                        <td>{server.ipAddress}</td>
+                        <td>CHANGE ME TO USER ID</td>
                         <td>
                             <button onClick={() => updateServer(server)}>Update</button>
                             <Link to={`/details_server/${server.id}`}>

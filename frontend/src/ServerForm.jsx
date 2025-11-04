@@ -1,23 +1,21 @@
 import { useState } from "react";
 
 const ServerForm = ({ existingServer = {}, updateCallback }) => {
-    const [firstName, setFirstName] = useState(existingServer.firstName || "");
-    const [lastName, setLastName] = useState(existingServer.lastName || "");
-    const [email, setEmail] = useState(existingServer.email || "");
+    const [name, setName] = useState(existingServer.name || "");
+    const [ipAddress, setIpAddress] = useState(existingServer.ipAddress || "");
 
-    const updating = Object.entries(existingServer).length !== 0
+    const isUpdating = Object.keys(existingServer).length > 0;
 
     const onSubmit = async (e) => {
         e.preventDefault()
 
         const data = {
-            firstName,
-            lastName,
-            email
+            name,
+            ipAddress
         }
-        const url = "http://127.0.0.1:5000/" + (updating ? `update_server/${existingServer.id}` : "create_server")
+        const url = "http://127.0.0.1:5000/" + (isUpdating ? `update_server/${existingServer.id}` : "create_server")
         const options = {
-            method: updating ? "PATCH" : "POST",
+            method: isUpdating ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -35,35 +33,26 @@ const ServerForm = ({ existingServer = {}, updateCallback }) => {
     return (
         <form onSubmit={onSubmit}>
             <div>
-                <label htmlFor="firstName">First Name:</label>
+                <label htmlFor="name">Server Name:</label>
                 <input
                     type="text"
-                    id="firstName"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                 />
             </div>
             <div>
-                <label htmlFor="lastName">Last Name:</label>
+                <label htmlFor="ipAddress">IP Address:</label>
                 <input
                     type="text"
-                    id="lastName"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    id="ipAddress"
+                    value={ipAddress}
+                    onChange={(e) => setIpAddress(e.target.value)}
                 />
             </div>
-            <div>
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="text"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-            </div>
-            <button type="submit">{updating ? "Update" : "Create"}</button>
+            <button type="submit">{isUpdating ? "Update" : "Create"}</button>
         </form>
     );
 };
 
-export default ServerForm
+export default ServerForm;
