@@ -53,6 +53,20 @@ const ServerGraph = ({ dataPoints, onPointClick }) => {
 
     const options = {
         onClick: handleChartClick,
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Timestamp',
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Values (%)',
+                },
+            },
+        },
     };
 
     return <div style={{ width: '600px', margin: '50px auto' }}><Line data={data} options={options} /></div>;

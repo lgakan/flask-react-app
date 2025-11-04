@@ -9,9 +9,21 @@ const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
     const onSubmit = async (e) => {
         e.preventDefault();
 
+        const cpu = parseFloat(cpuUsage);
+        const memory = parseFloat(memoryUsage);
+
+        if (isNaN(cpu) || cpu < 0 || cpu > 100) {
+            alert("CPU Usage must be a number between 0 and 100.");
+            return;
+        }
+        if (isNaN(memory) || memory < 0 || memory > 100) {
+            alert("Memory Usage must be a number between 0 and 100.");
+            return;
+        }
+
         const data = {
-            cpuUsage: parseFloat(cpuUsage),
-            memoryUsage: parseFloat(memoryUsage),
+            cpuUsage: cpu,
+            memoryUsage: memory,
             serverId: serverId,
         };
 
@@ -43,6 +55,8 @@ const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
                     value={cpuUsage}
                     onChange={(e) => setCpuUsage(e.target.value)}
                     step="0.1"
+                    min="0"
+                    max="100"
                 />
             </div>
             <div>
@@ -53,6 +67,8 @@ const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
                     value={memoryUsage}
                     onChange={(e) => setMemoryUsage(e.target.value)}
                     step="0.1"
+                    min="0"
+                    max="100"
                 />
             </div>
             <p>Timestamp: {isUpdating ? new Date(existingData.timestamp).toLocaleString() : "Now"}</p>
