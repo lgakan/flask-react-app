@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ServerList from "./ServerList";
 import "./App.css";
 import ServerForm from "./ServerForm";
+import ServerDetailsPage from "./ServerDetailsPage";
 
-function App() {
+// The logic from your old App.jsx is now the HomePage
+const HomePage = () => {
   const [servers, setServers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentServer, setCurrentServer] = useState({})
@@ -50,6 +53,17 @@ function App() {
       </div>
       }
     </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/details_server/:serverId" element={<ServerDetailsPage />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -34,11 +34,7 @@ def create_server():
 
 @app.route("/update_server/<int:server_id>", methods=["PATCH"])
 def update_server(server_id):
-    server = Server.query.get(server_id)
-
-    if not server:
-        return jsonify({"message": "Server not found"}), 404
-
+    server = Server.query.get_or_404(server_id, description="Server not found")
     data = request.json
     server.first_name = data.get("firstName", server.first_name)
     server.last_name = data.get("lastName", server.last_name)
@@ -51,16 +47,26 @@ def update_server(server_id):
 
 @app.route("/delete_server/<int:server_id>", methods=["DELETE"])
 def delete_server(server_id):
-    server = Server.query.get(server_id)
-
-    if not server:
-        return jsonify({"message": "Server not found"}), 404
-
+    server = Server.query.get_or_404(server_id, description="Server not found")
     db.session.delete(server)
     db.session.commit()
 
     return jsonify({"message": "Server deleted!"}), 200
 
+
+@app.route("/details_server/<int:server_id>", methods=["GET"])
+def details_server(server_id):
+    import random
+    from datetime import datetime, timedelta
+
+    print("HERE -> ")
+    server = Server.query.get_or_404(server_id, description="Server not found")
+    
+    # Generate sample time-series data for the graph
+    labels = [(datetime.now() - timedelta(days=i)).strftime('%b %d') for i in range(6, -1, -1)]
+    usage_data = [random.randint(10, 80) for _ in range(7)]
+
+    return jsonify({"firstName": server.first_name, "graphData": {"labels": labels, "data": usage_data}}), 200
 
 if __name__ == "__main__":
     with app.app_context():

@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 
 const ServerList = ({ servers, updateServer, updateCallback }) => {
     const onDelete = async (id) => {
@@ -36,6 +37,9 @@ const ServerList = ({ servers, updateServer, updateCallback }) => {
                         <td>{server.email}</td>
                         <td>
                             <button onClick={() => updateServer(server)}>Update</button>
+                            <Link to={`/details_server/${server.id}`}>
+                                <button>Details</button>
+                            </Link>
                             <button onClick={() => onDelete(server.id)}>Delete</button>
                         </td>
                     </tr>
