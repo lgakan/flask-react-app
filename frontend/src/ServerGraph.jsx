@@ -28,8 +28,14 @@ const ServerGraph = ({ dataPoints, onPointClick }) => {
             onPointClick(dataPoints[dataIndex]);
         }
     };
-    // Format the timestamp for better readability on the X-axis
-    const formattedLabels = dataPoints.map(d => new Date(d.timestamp).toLocaleTimeString());
+
+    // Format the timestamp to show time, date, and year for better readability
+    const formattedLabels = dataPoints.map(d => {
+        const date = new Date(d.timestamp);
+        // Using options for toLocaleString gives us a nice, readable format
+        // e.g., "21/10/2023, 14:35"
+        return date.toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+    });
 
     const data = {
         labels: formattedLabels,

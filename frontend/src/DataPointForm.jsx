@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 
+// Helper to format a Date object into a string suitable for datetime-local input (YYYY-MM-DDTHH:mm)
+const formatDateTimeForInput = (date) => {
+    if (!date) return '';
+    const d = new Date(date);
+    // Adjust for the local timezone offset to display the correct local time in the input
+    const timezoneOffset = d.getTimezoneOffset() * 60000; // in milliseconds
+    const localDate = new Date(d.getTime() - timezoneOffset);
+    return localDate.toISOString().slice(0, 16);
+};
+
 const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
     const [cpuUsage, setCpuUsage] = useState(existingData.cpuUsage || "");
     const [memoryUsage, setMemoryUsage] = useState(existingData.memoryUsage || "");
-
+    const [timestamp, setTimestamp] = useState(formatDateTimeForInput(existingData.timestamp || new Date()));
+    
     const isUpdating = Object.keys(existingData).length > 0;
 
     const onSubmit = async (e) => {
@@ -25,6 +36,7 @@ const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
             cpuUsage: cpu,
             memoryUsage: memory,
             serverId: serverId,
+            timestamp: new Date(timestamp).toISOString(), // Send timestamp in standard ISO format
         };
 
         const url = "http://127.0.0.1:5000/" + (isUpdating ? `server_data/${existingData.id}` : "server_data");
@@ -71,7 +83,15 @@ const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
                     max="100"
                 />
             </div>
-            <p>Timestamp: {isUpdating ? new Date(existingData.timestamp).toLocaleString() : "Now"}</p>
+            <div>
+                <label htmlFor="timestamp">Timestamp:</label>
+                <input
+                    type="datetime-local"
+                    id="timestamp"
+                    value={timestamp}
+                    onChange={(e) => setTimestamp(e.target.value)}
+                />
+            </div>
             <button type="submit">{isUpdating ? "Update Data Point" : "Create Data Point"}</button>
         </form>
     );
