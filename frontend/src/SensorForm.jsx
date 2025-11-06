@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-const ServerForm = ({ existingServer = {}, updateCallback }) => {
-    const [name, setName] = useState(existingServer.name || "");
-    const [ipAddress, setIpAddress] = useState(existingServer.ipAddress || "");
+const SensorForm = ({ existingSensor = {}, updateCallback }) => {
+    const [name, setName] = useState(existingSensor.name || "");
+    const [ipAddress, setIpAddress] = useState(existingSensor.ipAddress || "");
 
-    const isUpdating = Object.keys(existingServer).length > 0;
+    const isUpdating = Object.keys(existingSensor).length > 0;
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -13,7 +13,7 @@ const ServerForm = ({ existingServer = {}, updateCallback }) => {
             name,
             ipAddress
         }
-        const url = "http://127.0.0.1:5000/" + (isUpdating ? `update_server/${existingServer.id}` : "create_server")
+        const url = "http://127.0.0.1:5000/" + (isUpdating ? `update_sensor/${existingSensor.id}` : "create_sensor")
         const options = {
             method: isUpdating ? "PATCH" : "POST",
             headers: {
@@ -33,7 +33,7 @@ const ServerForm = ({ existingServer = {}, updateCallback }) => {
     return (
         <form onSubmit={onSubmit}>
             <div>
-                <label htmlFor="name">Server Name:</label>
+                <label htmlFor="name">Sensor Name:</label>
                 <input
                     type="text"
                     id="name"
@@ -55,4 +55,4 @@ const ServerForm = ({ existingServer = {}, updateCallback }) => {
     );
 };
 
-export default ServerForm;
+export default SensorForm;

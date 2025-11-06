@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import ServerGraph from './ServerGraph';
+import SensorGraph from './SensorGraph';
 import DataPointForm from './DataPointForm';
 
-const ServerDetailsPage = () => {
-    const [serverDetails, setServerDetails] = useState(null);
+const SensorDetailsPage = () => {
+    const [sensorDetails, setSensorDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentDataPoint, setCurrentDataPoint] = useState({});
-    const { serverId } = useParams(); // Get the serverId from the URL
+    const { sensorId } = useParams(); // Get the sensorId from the URL
 
     // Use useCallback to prevent re-creating the function on every render
     const fetchDetails = React.useCallback(async () => {
@@ -17,18 +17,18 @@ const ServerDetailsPage = () => {
             // Reset states for re-fetching
             setLoading(true);
             setError(null);
-            const response = await fetch(`http://127.0.0.1:5000/details_server/${serverId}`);
+            const response = await fetch(`http://127.0.0.1:5000/details_sensor/${sensorId}`);
             if (!response.ok) {
-                throw new Error('Server not found');
+                throw new Error('Sensor not found');
             }
             const data = await response.json();
-            setServerDetails(data);
+            setSensorDetails(data);
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
-    }, [serverId]);
+    }, [sensorId]);
 
     useEffect(() => {
         fetchDetails();
@@ -56,7 +56,7 @@ const ServerDetailsPage = () => {
 
     const deleteDataPoint = async (dataId) => {
         if (window.confirm("Are you sure you want to delete this data point?")) {
-            const url = `http://127.0.0.1:5000/server_data/${dataId}`;
+            const url = `http://127.0.0.1:5000/sensor_data/${dataId}`;
             const options = { method: "DELETE" };
             const response = await fetch(url, options);
             if (response.status === 200) {
@@ -72,13 +72,13 @@ const ServerDetailsPage = () => {
     if (error) return <div>Error: {error}</div>;
 
     // Don't render the component until the data has been fetched.
-    if (!serverDetails) return null;
+    if (!sensorDetails) return null;
 
     return (
         <div>
-            <Link to="/">Back to Server List</Link>
-            <h2>Usage Details for {serverDetails.name} ({serverDetails.ipAddress})</h2>
-            <ServerGraph dataPoints={serverDetails.dataPoints || []} onPointClick={openEditModal} />
+            <Link to="/">Back to Sensor List</Link>
+            <h2>Usage Details for {sensorDetails.name} ({sensorDetails.ipAddress})</h2>
+            <SensorGraph dataPoints={sensorDetails.dataPoints || []} onPointClick={openEditModal} />
 
             <button onClick={openCreateModal}>Add New Data Point</button>
 
@@ -88,7 +88,7 @@ const ServerDetailsPage = () => {
                         <span className="close" onClick={closeModal}>&times;</span>
                         <DataPointForm
                             existingData={currentDataPoint}
-                            serverId={serverId}
+                            sensorId={sensorId}
                             updateCallback={onDataUpdate}
                         />
                     </div>
@@ -99,4 +99,4 @@ const ServerDetailsPage = () => {
     );
 };
 
-export default ServerDetailsPage;
+export default SensorDetailsPage;

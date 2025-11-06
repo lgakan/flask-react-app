@@ -1,54 +1,54 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ServerList from "./ServerList";
+import SensorList from "./SensorList";
 import "./App.css";
-import ServerForm from "./ServerForm";
-import ServerDetailsPage from "./ServerDetailsPage";
+import SensorForm from "./SensorForm";
+import SensorDetailsPage from "./SensorDetailsPage";
 
 // The logic from your old App.jsx is now the HomePage
 const HomePage = () => {
-  const [servers, setServers] = useState([]);
+  const [sensors, setSensors] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentServer, setCurrentServer] = useState({})
+  const [currentSensor, setCurrentSensor] = useState({})
 
   useEffect(() => {
-    fetchServers()
+    fetchSensors()
   }, []);
 
-  const fetchServers = async () => {
-    const response = await fetch("http://127.0.0.1:5000/servers");
+  const fetchSensors = async () => {
+    const response = await fetch("http://127.0.0.1:5000/sensors");
     const data = await response.json();
-    setServers(data.servers);
+    setSensors(data.sensors);
   };
 
   const closeModal = () => {
     setIsModalOpen(false)
-    setCurrentServer({})
+    setCurrentSensor({})
   }
 
   const openCreateModal = () => {
     if (!isModalOpen) setIsModalOpen(true)
   }
 
-  const openEditModal = (server) => {
+  const openEditModal = (sensor) => {
     if (isModalOpen) return
-    setCurrentServer(server)
+    setCurrentSensor(sensor)
     setIsModalOpen(true)
   }
 
   const onUpdate = () => {
     closeModal()
-    fetchServers()
+    fetchSensors()
   }
 
   return (
     <>
-      <ServerList servers={servers} updateServer={openEditModal} updateCallback={onUpdate} />
-      <button onClick={openCreateModal}>Create New Server</button>
+      <SensorList sensors={sensors} updateSensor={openEditModal} updateCallback={onUpdate} />
+      <button onClick={openCreateModal}>Create New Sensor</button>
       {isModalOpen && <div className="modal">
         <div className="modal-content">
           <span className="close" onClick={closeModal}>&times;</span>
-          <ServerForm existingServer={currentServer} updateCallback={onUpdate} />
+          <SensorForm existingSensor={currentSensor} updateCallback={onUpdate} />
         </div>
       </div>
       }
@@ -61,7 +61,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/details_server/:serverId" element={<ServerDetailsPage />} />
+        <Route path="/details_sensor/:sensorId" element={<SensorDetailsPage />} />
       </Routes>
     </Router>
   );

@@ -21,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-const ServerGraph = ({ dataPoints, onPointClick }) => {
+const SensorGraph = ({ dataPoints, onPointClick }) => {
     const handleChartClick = (event, elements) => {
         if (elements.length > 0) {
             const dataIndex = elements[0].index;
@@ -78,4 +78,4 @@ const ServerGraph = ({ dataPoints, onPointClick }) => {
     return <div style={{ width: '600px', margin: '50px auto' }}><Line data={data} options={options} /></div>;
 };
 
-export default ServerGraph;
+export default SensorGraph;

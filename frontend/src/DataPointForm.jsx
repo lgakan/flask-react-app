@@ -10,7 +10,7 @@ const formatDateTimeForInput = (date) => {
     return localDate.toISOString().slice(0, 16);
 };
 
-const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
+const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
     const [cpuUsage, setCpuUsage] = useState(existingData.cpuUsage || "");
     const [memoryUsage, setMemoryUsage] = useState(existingData.memoryUsage || "");
     const [timestamp, setTimestamp] = useState(formatDateTimeForInput(existingData.timestamp || new Date()));
@@ -35,11 +35,11 @@ const DataPointForm = ({ existingData = {}, serverId, updateCallback }) => {
         const data = {
             cpuUsage: cpu,
             memoryUsage: memory,
-            serverId: serverId,
+            sensorId: sensorId,
             timestamp: new Date(timestamp).toISOString(), // Send timestamp in standard ISO format
         };
 
-        const url = "http://127.0.0.1:5000/" + (isUpdating ? `server_data/${existingData.id}` : "server_data");
+        const url = "http://127.0.0.1:5000/" + (isUpdating ? `sensor_data/${existingData.id}` : "sensor_data");
         const options = {
             method: isUpdating ? "PATCH" : "POST",
             headers: {
