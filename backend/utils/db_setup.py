@@ -1,16 +1,11 @@
 import random
 from datetime import datetime, timedelta, timezone
-from ..main import app, db
+from config import app, db
 from ..models import User, Sensor, SensorData
 
 
-def clear_and_seed_database():
+def seed_database():
     with app.app_context():
-        print("Clearing the database...")
-        db.drop_all()
-        db.create_all()
-        print("Database cleared and tables recreated.")
-
         print("Seeding Users...")
         users_to_create = [
             User(username="admin1", password="password", first_name="Admin", last_name="UserOne", email="admin1@example.com", is_admin=True),
@@ -44,8 +39,10 @@ def clear_and_seed_database():
             for i in range(10):
                 timestamp = datetime.now(timezone.utc) - timedelta(hours=i)
                 data_point = SensorData(
-                    cpu_usage=round(random.uniform(1.0, 99.0), 2),
-                    memory_usage=round(random.uniform(1.0, 99.0), 2),
+                    temperature=round(random.uniform(15.0, 30.0), 2),  # Celsius
+                    humidity=round(random.uniform(30.0, 60.0), 2),     # %
+                    pressure=round(random.uniform(980.0, 1050.0), 2),  # hPa
+                    light_level=round(random.uniform(100, 1000), 2),   # lux
                     timestamp=timestamp,
                     sensor_id=sensor.id
                 )
@@ -57,6 +54,15 @@ def clear_and_seed_database():
         print(f"Added {total_data_points} data points for {len(all_sensors)} sensors.")
 
         print("\nDatabase seeding complete!")
+
+
+def clear_and_seed_database():
+    with app.app_context():
+        print("Clearing the database...")
+        db.drop_all()
+        db.create_all()
+        print("Database cleared and tables recreated.")
+        seed_database()
 
 
 if __name__ == "__main__":

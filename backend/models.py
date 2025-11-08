@@ -62,16 +62,20 @@ class Sensor(db.Model):
 class SensorData(db.Model):
     __tablename__ = 'sensor_data'
     id = db.Column(db.Integer, primary_key=True)
-    cpu_usage = db.Column(db.Float, nullable=False)
-    memory_usage = db.Column(db.Float, nullable=False)
+    temperature = db.Column(db.Float, nullable=False)
+    humidity = db.Column(db.Float, nullable=False)
+    pressure = db.Column(db.Float, nullable=True)
+    light_level = db.Column(db.Float, nullable=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensors.id'), nullable=False)
 
     def to_json(self):
         return {
             "id": self.id,
-            "cpuUsage": self.cpu_usage,
-            "memoryUsage": self.memory_usage,
+            "temperature": self.temperature,
+            "humidity": self.humidity,
+            "pressure": self.pressure,
+            "lightLevel": self.light_level,
             "timestamp": self.timestamp.isoformat(),
             "sensorId": self.sensor_id,
         }

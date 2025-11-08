@@ -41,17 +41,31 @@ const SensorGraph = ({ dataPoints, onPointClick }) => {
         labels: formattedLabels,
         datasets: [
             {
-                label: 'CPU Usage (%)',
-                data: dataPoints.map(d => d.cpuUsage),
+                label: 'Temperature (°C)',
+                data: dataPoints.map(d => d.temperature),
                 fill: false,
-                borderColor: 'rgb(75, 192, 192)', // A nice teal color
+                borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1,
             },
             {
-                label: 'Memory Usage (%)',
-                data: dataPoints.map(d => d.memoryUsage),
+                label: 'Humidity (%)',
+                data: dataPoints.map(d => d.humidity),
                 fill: false,
-                borderColor: 'rgb(255, 99, 132)', // A nice red color
+                borderColor: 'rgb(54, 162, 235)',
+                tension: 0.1,
+            },
+            {
+                label: 'Pressure',
+                data: dataPoints.map(d => d.pressure),
+                fill: false,
+                borderColor: 'rgb(144,47,203)',
+                tension: 0.1,
+            },
+            {
+                label: 'light Level (%)',
+                data: dataPoints.map(d => d.lightLevel),
+                fill: false,
+                borderColor: 'rgb(150,148,31)',
                 tension: 0.1,
             },
         ],
@@ -69,7 +83,7 @@ const SensorGraph = ({ dataPoints, onPointClick }) => {
             y: {
                 title: {
                     display: true,
-                    text: 'Values (%)',
+                    text: 'Values',
                 },
             },
         },

@@ -112,6 +112,9 @@ docker-compose.override.yml
 # PyCharm / IntelliJ
 .idea/
 
+# Custom
+todo.md
+
 # =====================================
 # End of file
 # =====================================

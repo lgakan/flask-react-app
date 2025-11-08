@@ -11,33 +11,31 @@ const formatDateTimeForInput = (date) => {
 };
 
 const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
-    const [cpuUsage, setCpuUsage] = useState(existingData.cpuUsage || "");
-    const [memoryUsage, setMemoryUsage] = useState(existingData.memoryUsage || "");
+    const [temperature, setTemperature] = useState(existingData.temperature || "");
+    const [humidity, setHumidity] = useState(existingData.humidity || "");
+    const [pressure, setPressure] = useState(existingData.pressure || "");
+    const [lightLevel, setLightLevel] = useState(existingData.lightLevel || "");
     const [timestamp, setTimestamp] = useState(formatDateTimeForInput(existingData.timestamp || new Date()));
     
     const isUpdating = Object.keys(existingData).length > 0;
 
     const onSubmit = async (e) => {
         e.preventDefault();
-
-        const cpu = parseFloat(cpuUsage);
-        const memory = parseFloat(memoryUsage);
-
-        if (isNaN(cpu) || cpu < 0 || cpu > 100) {
-            alert("CPU Usage must be a number between 0 and 100.");
-            return;
-        }
-        if (isNaN(memory) || memory < 0 || memory > 100) {
-            alert("Memory Usage must be a number between 0 and 100.");
-            return;
-        }
-
+        
         const data = {
-            cpuUsage: cpu,
-            memoryUsage: memory,
+            temperature: parseFloat(temperature),
+            humidity: parseFloat(humidity),
+            pressure: pressure ? parseFloat(pressure) : null,
+            lightLevel: lightLevel ? parseFloat(lightLevel) : null,
             sensorId: sensorId,
             timestamp: new Date(timestamp).toISOString(), // Send timestamp in standard ISO format
         };
+
+        // Basic validation
+        if (isNaN(data.temperature) || isNaN(data.humidity)) {
+            alert("Temperature and Humidity must be valid numbers.");
+            return;
+        }
 
         const url = "http://127.0.0.1:5000/" + (isUpdating ? `sensor_data/${existingData.id}` : "sensor_data");
         const options = {
@@ -47,7 +45,6 @@ const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
             },
             body: JSON.stringify(data),
         };
-
         const response = await fetch(url, options);
         if (response.status !== 201 && response.status !== 200) {
             const responseData = await response.json();
@@ -60,27 +57,43 @@ const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
     return (
         <form onSubmit={onSubmit}>
             <div>
-                <label htmlFor="cpuUsage">CPU Usage (%):</label>
+                <label htmlFor="temperature">Temperature (°C):</label>
                 <input
                     type="number"
-                    id="cpuUsage"
-                    value={cpuUsage}
-                    onChange={(e) => setCpuUsage(e.target.value)}
+                    id="temperature"
+                    value={temperature}
+                    onChange={(e) => setTemperature(e.target.value)}
                     step="0.1"
-                    min="0"
-                    max="100"
                 />
             </div>
             <div>
-                <label htmlFor="memoryUsage">Memory Usage (%):</label>
+                <label htmlFor="humidity">Humidity (%):</label>
                 <input
                     type="number"
-                    id="memoryUsage"
-                    value={memoryUsage}
-                    onChange={(e) => setMemoryUsage(e.target.value)}
+                    id="humidity"
+                    value={humidity}
+                    onChange={(e) => setHumidity(e.target.value)}
                     step="0.1"
-                    min="0"
-                    max="100"
+                />
+            </div>
+            <div>
+                <label htmlFor="pressure">Pressure (hPa):</label>
+                <input
+                    type="number"
+                    id="pressure"
+                    value={pressure}
+                    onChange={(e) => setPressure(e.target.value)}
+                    step="0.1"
+                />
+            </div>
+            <div>
+                <label htmlFor="lightLevel">Light Level (lux):</label>
+                <input
+                    type="number"
+                    id="lightLevel"
+                    value={lightLevel}
+                    onChange={(e) => setLightLevel(e.target.value)}
+                    step="1"
                 />
             </div>
             <div>

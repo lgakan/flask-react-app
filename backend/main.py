@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from config import app, db
-from models import User, Sensor, SensorData
+from models import Sensor, SensorData
+from utils.db_setup import seed_database
 
 
 @app.route("/sensors", methods=["GET"])
@@ -66,16 +67,30 @@ def details_sensor(sensor_id):
 @app.route("/sensor_data", methods=["POST"])
 def create_sensor_data():
     sensor_id = request.json.get("sensorId")
-    cpu_usage = request.json.get("cpuUsage")
-    memory_usage = request.json.get("memoryUsage")
+    temperature = request.json.get("temperature")
+    humidity = request.json.get("humidity")
+    pressure = request.json.get("pressure")
+    light_level = request.json.get("lightLevel")
 
-    if not sensor_id or cpu_usage is None or memory_usage is None:
-        return jsonify({"message": "sensorId, cpuUsage, and memoryUsage are required."}), 400
+    if (
+            not sensor_id
+            or temperature is None
+            or humidity is None
+            or pressure is None
+            or light_level is None
+    ):
+        return jsonify({"message": "One of the required parameters is None."}), 400
 
     if not Sensor.query.get(sensor_id):
         return jsonify({"message": f"Sensor with id {sensor_id} not found."}), 404
 
-    new_data_point = SensorData(sensor_id=sensor_id, cpu_usage=cpu_usage, memory_usage=memory_usage)
+    new_data_point = SensorData(
+        sensor_id=sensor_id,
+        temperature=temperature,
+        humidity=humidity,
+        pressure=pressure,
+        light_level=light_level
+    )
     try:
         db.session.add(new_data_point)
         db.session.commit()
@@ -90,8 +105,10 @@ def update_sensor_data(data_id):
     data_point = SensorData.query.get_or_404(data_id, description="Data point not found")
     data = request.json
 
-    data_point.cpu_usage = data.get("cpuUsage", data_point.cpu_usage)
-    data_point.memory_usage = data.get("memoryUsage", data_point.memory_usage)
+    data_point.temperature = data.get("temperature", data_point.temperature)
+    data_point.humidity = data.get("humidity", data_point.humidity)
+    data_point.pressure = data.get("pressure", data_point.pressure)
+    data_point.light_level = data.get("lightLevel", data_point.light_level)
 
     db.session.commit()
     return jsonify({"message": "Data point updated."}), 200
@@ -107,6 +124,12 @@ def delete_sensor_data(data_id):
 
 if __name__ == "__main__":
     with app.app_context():
+        # Create tables if they don't exist
         db.create_all()
+
+        # Check if the database is empty (by checking for sensors)
+        if Sensor.query.count() == 0:
+            print("Sensor table is empty. Seeding database with initial data...")
+            seed_database()
 
     app.run(debug=True)
