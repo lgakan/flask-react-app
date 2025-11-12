@@ -26,6 +26,13 @@
   box-shadow: var(--shadow-md);
 }
 
+/* This new class will directly control the chart's wrapper */
+.chart-wrapper {
+  position: relative;
+  height: 40vh; /* Use viewport height for screen display */
+  min-height: 300px;
+}
+
 /* Style for the secondary back button */
 .button-secondary {
   background-color: var(--secondary-color);
@@ -82,16 +89,33 @@
   cursor: pointer;
 }
 
-/* ===================================== */
-/*          Media Queries                */
-/* ===================================== */
-
-@media (max-width: 768px) {
-  /* No specific changes needed if using the global .container class */
-}
-
 @media print {
-  .no-print, .modal {
+  /* Hide elements that shouldn't be printed. The .no-print class is already in print.css */
+  .modal {
     display: none !important;
+  }
+
+  /* Reset container styles for full-page width printing */
+  body, .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .sensor-graph-container {
+    box-shadow: none !important;
+    border: 1px solid #ccc;
+    padding: 1rem !important;
+    width: 100%;
+    height: auto !important; /* Allow container to fit its content */
+    page-break-inside: avoid; /* Try to prevent the chart from splitting across pages */
+  }
+
+  .chart-wrapper, .chart-wrapper canvas {
+    height: 450px !important;
+    min-height: 450px !important;
+    width: 100% !important;
   }
 }

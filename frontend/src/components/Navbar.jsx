@@ -13,7 +13,7 @@ const Navbar = () => {
     };
 
     return (
-        <header className="app-header">
+        <header className="app-header no-print">
             <nav className="app-nav">
                 <Link to="/" className="app-nav-title">Sensor Dashboard</Link>
                 <div className="app-nav-links">

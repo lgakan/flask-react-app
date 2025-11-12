@@ -55,7 +55,7 @@ const SensorGraph = ({ dataPoints, onPointClick }) => {
                 tension: 0.1,
             },
             {
-                label: 'Pressure',
+                label: 'Pressure (hPa)',
                 data: dataPoints.map(d => d.pressure),
                 fill: false,
                 borderColor: 'rgb(144,47,203)',
@@ -75,11 +75,19 @@ const SensorGraph = ({ dataPoints, onPointClick }) => {
         responsive: true, // Ensure chart is responsive
         maintainAspectRatio: false, // Allow chart to fill container's height/width
         onClick: handleChartClick,
+        animation: {
+            duration: 0
+        },
         scales: {
             x: {
                 title: {
                     display: true,
                     text: 'Timestamp',
+                },
+                ticks: {
+                    // Automatically skip labels to prevent them from overlapping
+                    autoSkip: true,
+                    maxTicksLimit: 10 // Show a maximum of 10 timestamps
                 },
             },
             y: {
@@ -92,7 +100,7 @@ const SensorGraph = ({ dataPoints, onPointClick }) => {
     };
 
     // The container div will control the size. A height is needed for maintainAspectRatio: false.
-    return <div style={{ position: 'relative', height: '40vh', minHeight: '300px' }}><Line data={data} options={options} /></div>;
+    return <div className="chart-wrapper"><Line data={data} options={options} /></div>;
 };
 
 export default SensorGraph;

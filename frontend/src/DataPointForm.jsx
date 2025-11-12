@@ -24,21 +24,52 @@ const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        
+
+        const temp = parseFloat(temperature);
+        const hum = parseFloat(humidity);
+        const pres = pressure ? parseFloat(pressure) : null;
+        const light = lightLevel ? parseFloat(lightLevel) : null;
+
+        const errors = [];
+        if (isNaN(temp)) {
+            errors.push("Temperature must be a valid number.");
+        } else if (temp < -50 || temp > 150) {
+            errors.push("Temperature must be between -50 and 150.");
+        }
+
+        if (isNaN(hum)) {
+            errors.push("Humidity must be a valid number.");
+        } else if (hum < 0 || hum > 100) {
+            errors.push("Humidity must be between 0 and 100.");
+        }
+
+        if (pres !== null && isNaN(pres)) {
+            errors.push("Pressure must be a valid number if provided.");
+        } else if (pres < 0 || pres > 10_000) {
+            errors.push("Pressure must be between 0 and 10k.");
+        }
+
+        if (light !== null) {
+            if (isNaN(light)) {
+                errors.push("Light Level must be a valid number if provided.");
+            } else if (light < 0 || light > 100) {
+                errors.push("Light Level must be between 0 and 100.");
+            }
+        }
+
+        if (errors.length > 0) {
+            alert("Please fix the following errors:\n\n" + errors.join("\n"));
+            return;
+        }
+
         const data = {
-            temperature: parseFloat(temperature),
-            humidity: parseFloat(humidity),
-            pressure: pressure ? parseFloat(pressure) : null,
-            lightLevel: lightLevel ? parseFloat(lightLevel) : null,
+            temperature: temp,
+            humidity: hum,
+            pressure: pres,
+            lightLevel: light,
             sensorId: sensorId,
             timestamp: new Date(timestamp).toISOString(), // Send timestamp in standard ISO format
         };
-
-        // Basic validation
-        if (isNaN(data.temperature) || isNaN(data.humidity)) {
-            alert("Temperature and Humidity must be valid numbers.");
-            return;
-        }
 
         const url = "http://127.0.0.1:5000/" + (isUpdating ? `sensor_data/${existingData.id}` : "sensor_data");
         const options = {
