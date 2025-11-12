@@ -34,6 +34,7 @@ class User(CredentialsHashModel):
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    sensors = db.relationship('Sensor', backref='owner', lazy=True)
 
     def to_json(self):
         return {
@@ -50,6 +51,7 @@ class Sensor(db.Model):
     name = db.Column(db.String(100), nullable=False)
     ip_address = db.Column(db.String(45), nullable=False, unique=True)
     data_points = db.relationship('SensorData', backref='sensor', lazy=True, cascade="all, delete-orphan")
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def to_json(self):
         return {

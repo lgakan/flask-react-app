@@ -1,57 +1,20 @@
 from flask import request, jsonify
 from config import app, db
-from models import Sensor, SensorData
+from models import Sensor, SensorData, User
 from utils.db_setup import seed_database
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
+
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "your-super-secret-key-change-me"  # Change this in your production app!
+jwt = JWTManager(app)
 
 
+# --- Public Routes ---
 @app.route("/sensors", methods=["GET"])
 def get_sensors():
     sensors = Sensor.query.all()
     json_sensors = list(map(lambda x: x.to_json(), sensors))
     return jsonify({"sensors": json_sensors})
-
-
-@app.route("/create_sensor", methods=["POST"])
-def create_sensor():
-    name = request.json.get("name")
-    ip_address = request.json.get("ipAddress")
-
-    if not name or not ip_address:
-        return (
-            jsonify({"message": "You must include a sensor name and IP address"}),
-            400,
-        )
-
-    new_sensor = Sensor(name=name, ip_address=ip_address)
-    try:
-        db.session.add(new_sensor)
-        db.session.commit()
-    except Exception as e:
-        # This can happen if the IP address is not unique
-        return jsonify({"message": str(e)}), 400
-
-    return jsonify({"message": "Sensor created!"}), 201
-
-
-@app.route("/update_sensor/<int:sensor_id>", methods=["PATCH"])
-def update_sensor(sensor_id):
-    sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
-    data = request.json
-    sensor.name = data.get("name", sensor.name)
-    sensor.ip_address = data.get("ipAddress", sensor.ip_address)
-
-    db.session.commit()
-
-    return jsonify({"message": "Sensor updated."}), 200
-
-
-@app.route("/delete_sensor/<int:sensor_id>", methods=["DELETE"])
-def delete_sensor(sensor_id):
-    sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
-    db.session.delete(sensor)
-    db.session.commit()
-
-    return jsonify({"message": "Sensor deleted!"}), 200
 
 
 @app.route("/details_sensor/<int:sensor_id>", methods=["GET"])
@@ -64,7 +27,91 @@ def details_sensor(sensor_id):
     return jsonify(sensor_details), 200
 
 
+# --- Authentication Routes ---
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+
+    if not all([username, password, first_name, last_name, email]):
+        return jsonify({"message": "All fields are required"}), 400
+
+    if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
+        return jsonify({"message": "Username or email already exists"}), 400
+
+    new_user = User(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"message": "User created successfully"}), 201
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    user = User.query.filter_by(username=username).first()
+
+    if user and user.check_password(password):
+        access_token = create_access_token(identity=user.id)
+        return jsonify(access_token=access_token, user=user.to_json())
+
+    return jsonify({"message": "Invalid username or password"}), 401
+
+
+# --- Protected Routes ---
+@app.route("/create_sensor", methods=["POST"])
+@jwt_required()
+def create_sensor():
+    current_user_id = get_jwt_identity()
+    name = request.json.get("name")
+    ip_address = request.json.get("ipAddress")
+
+    if not name or not ip_address:
+        return jsonify({"message": "You must include a sensor name and IP address"}), 400
+
+    new_sensor = Sensor(name=name, ip_address=ip_address, user_id=current_user_id)
+    try:
+        db.session.add(new_sensor)
+        db.session.commit()
+    except Exception as e:
+        # This can happen if the IP address is not unique
+        return jsonify({"message": str(e)}), 400
+
+    return jsonify({"message": "Sensor created!"}), 201
+
+
+@app.route("/update_sensor/<int:sensor_id>", methods=["PATCH"])
+@jwt_required()
+def update_sensor(sensor_id):
+    sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
+    data = request.json
+    sensor.name = data.get("name", sensor.name)
+    sensor.ip_address = data.get("ipAddress", sensor.ip_address)
+
+    db.session.commit()
+
+    return jsonify({"message": "Sensor updated."}), 200
+
+
+@app.route("/delete_sensor/<int:sensor_id>", methods=["DELETE"])
+@jwt_required()
+def delete_sensor(sensor_id):
+    sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
+    db.session.delete(sensor)
+    db.session.commit()
+
+    return jsonify({"message": "Sensor deleted!"}), 200
+
+
 @app.route("/sensor_data", methods=["POST"])
+@jwt_required()
 def create_sensor_data():
     sensor_id = request.json.get("sensorId")
     temperature = request.json.get("temperature")
@@ -101,6 +148,7 @@ def create_sensor_data():
 
 
 @app.route("/sensor_data/<int:data_id>", methods=["PATCH"])
+@jwt_required()
 def update_sensor_data(data_id):
     data_point = SensorData.query.get_or_404(data_id, description="Data point not found")
     data = request.json
@@ -115,6 +163,7 @@ def update_sensor_data(data_id):
 
 
 @app.route("/sensor_data/<int:data_id>", methods=["DELETE"])
+@jwt_required()
 def delete_sensor_data(data_id):
     data_point = SensorData.query.get_or_404(data_id, description="Data point not found")
     db.session.delete(data_point)

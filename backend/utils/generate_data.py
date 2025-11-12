@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
-from ..main import app, db
-from ..models import Sensor, SensorData
+from main import app, db
+from models import Sensor, SensorData
 
 
 def generate_new_data_points():

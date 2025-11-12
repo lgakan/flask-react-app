@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta, timezone
 from config import app, db
-from ..models import User, Sensor, SensorData
+from models import User, Sensor, SensorData
 
 
 def seed_database():
@@ -17,12 +17,15 @@ def seed_database():
         db.session.commit()
         print(f"Added {len(users_to_create)} users.")
 
+        all_users = User.query.all()
+
         print("Seeding Sensors...")
         sensors_to_create = []
         for i in range(1, 11):
             sensor = Sensor(
                 name=f"Server Room {i}",
-                ip_address=f"192.168.1.{100 + i}"
+                ip_address=f"192.168.1.{100 + i}",
+                user_id=random.choice(all_users).id
             )
             sensors_to_create.append(sensor)
 

@@ -1,13 +1,12 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import {useAuth} from "./context/AuthContext";
 
 const SensorList = ({ sensors, updateSensor, updateCallback }) => {
+    const { isAuthenticated, authFetch } = useAuth()
     const onDelete = async (id) => {
         try {
-            const options = {
-                method: "DELETE"
-            }
-            const response = await fetch(`http://127.0.0.1:5000/delete_sensor/${id}`, options)
+            const response = await authFetch(`http://127.0.0.1:5000/delete_sensor/${id}`, { method: "DELETE" })
             if (response.status === 200) {
                 updateCallback()
             } else {
@@ -34,11 +33,13 @@ const SensorList = ({ sensors, updateSensor, updateCallback }) => {
                         <td>{sensor.name}</td>
                         <td>{sensor.ipAddress}</td>
                         <td>
-                            <button onClick={() => updateSensor(sensor)}>Update</button>
                             <Link to={`/details_sensor/${sensor.id}`}>
                                 <button>Details</button>
                             </Link>
-                            <button onClick={() => onDelete(sensor.id)}>Delete</button>
+                            {isAuthenticated && <>
+                                <button onClick={() => updateSensor(sensor)}>Update</button>
+                                <button onClick={() => onDelete(sensor.id)}>Delete</button>
+                            </>}
                         </td>
                     </tr>
                 ))}

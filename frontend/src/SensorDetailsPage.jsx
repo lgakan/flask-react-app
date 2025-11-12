@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SensorGraph from './SensorGraph';
 import DataPointForm from './DataPointForm';
+import { useAuth } from './context/AuthContext';
 
 const SensorDetailsPage = () => {
     const [sensorDetails, setSensorDetails] = useState(null);
@@ -10,6 +11,7 @@ const SensorDetailsPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentDataPoint, setCurrentDataPoint] = useState({});
     const { sensorId } = useParams(); // Get the sensorId from the URL
+    const { isAuthenticated, authFetch } = useAuth();
 
     // Use useCallback to prevent re-creating the function on every render
     const fetchDetails = React.useCallback(async () => {
@@ -27,7 +29,7 @@ const SensorDetailsPage = () => {
             setError(err.message);
         } finally {
             setLoading(false);
-        }
+        } 
     }, [sensorId]);
 
     useEffect(() => {
@@ -40,8 +42,10 @@ const SensorDetailsPage = () => {
     };
 
     const openCreateModal = () => {
-        setCurrentDataPoint({}); // Ensure form is for creation
-        setIsModalOpen(true);
+        if (isAuthenticated) {
+            setCurrentDataPoint({}); // Ensure form is for creation
+            setIsModalOpen(true);
+        }
     };
 
     const openEditModal = (dataPoint) => {
@@ -57,8 +61,7 @@ const SensorDetailsPage = () => {
     const deleteDataPoint = async (dataId) => {
         if (window.confirm("Are you sure you want to delete this data point?")) {
             const url = `http://127.0.0.1:5000/sensor_data/${dataId}`;
-            const options = { method: "DELETE" };
-            const response = await fetch(url, options);
+            const response = await authFetch(url, { method: "DELETE" });
             if (response.status === 200) {
                 onDataUpdate();
             } else {
@@ -77,10 +80,11 @@ const SensorDetailsPage = () => {
     return (
         <div>
             <Link to="/">Back to Sensor List</Link>
-            <h2>Usage Details for {sensorDetails.name} ({sensorDetails.ipAddress})</h2>
+            <h2>{sensorDetails.name} ({sensorDetails.ipAddress})</h2>
+            <p>Owner: {sensorDetails.ownerName}</p>
             <SensorGraph dataPoints={sensorDetails.dataPoints || []} onPointClick={openEditModal} />
 
-            <button onClick={openCreateModal}>Add New Data Point</button>
+            {isAuthenticated && <button onClick={openCreateModal}>Add New Data Point</button>}
 
             {isModalOpen && (
                 <div className="modal">
