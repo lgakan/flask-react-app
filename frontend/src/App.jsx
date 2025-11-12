@@ -6,6 +6,7 @@ import SensorForm from "./SensorForm";
 import SensorDetailsPage from "./SensorDetailsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
@@ -74,6 +75,7 @@ function App() {
             <Route path="/details_sensor/:sensorId" element={<SensorDetailsPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </main>
       </Router>

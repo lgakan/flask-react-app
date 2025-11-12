@@ -19,7 +19,9 @@ const Navbar = () => {
                 <div className="app-nav-links">
                     {isAuthenticated ? (
                         <>
-                            <span>Hello, {user?.firstName || user?.username}!</span>
+                            <Link to="/profile">
+                                Hello, {user?.firstName || user?.username}!
+                            </Link>
                             <button onClick={handleLogout}>Logout</button>
                         </>
                     ) : (

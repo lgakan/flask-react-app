@@ -81,6 +81,41 @@ def refresh():
     return jsonify(accessToken=new_access_token), 200
 
 
+@app.route('/profile', methods=['GET'])
+@jwt_required()
+def profile():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+    return jsonify(user.to_json()), 200
+
+
+@app.route('/change_password', methods=['PATCH'])
+@jwt_required()
+def change_password():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    data = request.get_json()
+    current_password = data.get('currentPassword')
+    new_password = data.get('newPassword')
+
+    if not current_password or not new_password:
+        return jsonify({"message": "Current password and new password are required"}), 400
+
+    if not user.check_password(current_password):
+        return jsonify({"message": "Invalid current password"}), 401
+
+    user.password = new_password
+    db.session.commit()
+
+    return jsonify({"message": "Password updated successfully"}), 200
+
+
 # --- Protected Routes ---
 @app.route("/create_sensor", methods=["POST"])
 @jwt_required(locations=["headers"])
