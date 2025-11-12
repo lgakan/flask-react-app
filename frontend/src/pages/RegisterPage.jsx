@@ -1,63 +1,74 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import '../AuthForm.css'; // Import the shared auth form styles
 
 const RegisterPage = () => {
-    const [formData, setFormData] = useState({
-        username: '',
-        password: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-    });
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
     const [error, setError] = useState('');
-    const [message, setMessage] = useState('');
+    const [success, setSuccess] = useState('');
     const navigate = useNavigate();
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        setMessage('');
+        setSuccess('');
 
         try {
             const response = await fetch('http://127.0.0.1:5000/register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password, firstName, lastName, email }),
             });
 
             const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to register');
+            if (response.ok) {
+                setSuccess(data.message || 'Registration successful! Please log in.');
+                // Optionally clear form or redirect after a short delay
+                setTimeout(() => navigate('/login'), 2000);
+            } else {
+                setError(data.message || 'Registration failed');
             }
-
-            setMessage('Registration successful! You can now log in.');
-            setTimeout(() => navigate('/login'), 2000); // Redirect to login after 2 seconds
         } catch (err) {
-            setError(err.message);
+            setError('Network error or server unreachable.');
+            console.error('Registration error:', err);
         }
     };
 
     return (
-        <div className="form-container">
-            <h2>Register</h2>
-            {error && <p className="error-message">{error}</p>}
-            {message && <p className="success-message">{message}</p>}
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="username" onChange={handleChange} placeholder="Username" required />
-                <input type="password" name="password" onChange={handleChange} placeholder="Password" required />
-                <input type="text" name="firstName" onChange={handleChange} placeholder="First Name" required />
-                <input type="text" name="lastName" onChange={handleChange} placeholder="Last Name" required />
-                <input type="email" name="email" onChange={handleChange} placeholder="Email" required />
-                <button type="submit">Register</button>
+        <div className="auth-container">
+            <form className="auth-form" onSubmit={handleSubmit}>
+                <h2>Register</h2>
+                {error && <p style={{ color: 'var(--error-color)', textAlign: 'center' }}>{error}</p>}
+                {success && <p style={{ color: 'var(--success-color)', textAlign: 'center' }}>{success}</p>}
+                <div className="form-group">
+                    <label htmlFor="firstName">First Name:</label>
+                    <input type="text" id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="lastName">Last Name:</label>
+                    <input type="text" id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email">Email:</label>
+                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="username">Username:</label>
+                    <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password">Password:</label>
+                    <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </div>
+                <button type="submit" className="button-primary">Register</button>
             </form>
-            <p>
-                Already have an account? <Link to="/login">Login here</Link>
-            </p>
         </div>
     );
 };

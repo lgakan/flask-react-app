@@ -47,17 +47,18 @@ const HomePage = () => {
   }
 
   return (
-    <>
+    <div className="home-page-content">
       <SensorList sensors={sensors} updateSensor={openEditModal} updateCallback={onUpdate} />
-      {isAuthenticated && <button onClick={openCreateModal}>Create New Sensor</button>}
-      {isModalOpen && <div className="modal">
-        <div className="modal-content">
-          <span className="close" onClick={closeModal}>&times;</span>
-          <SensorForm existingSensor={currentSensor} updateCallback={onUpdate} />
+      {isAuthenticated && <button onClick={openCreateModal} className="button-primary">Create New Sensor</button>}
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={closeModal}>&times;</span>
+            <SensorForm existingSensor={currentSensor} updateCallback={onUpdate} />
+          </div>
         </div>
-      </div>
-      }
-    </>
+      )}
+    </div>
   );
 }
 

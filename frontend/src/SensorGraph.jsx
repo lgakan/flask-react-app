@@ -72,6 +72,8 @@ const SensorGraph = ({ dataPoints, onPointClick }) => {
     };
 
     const options = {
+        responsive: true, // Ensure chart is responsive
+        maintainAspectRatio: false, // Allow chart to fill container's height/width
         onClick: handleChartClick,
         scales: {
             x: {
@@ -89,7 +91,8 @@ const SensorGraph = ({ dataPoints, onPointClick }) => {
         },
     };
 
-    return <div style={{ width: '600px', margin: '50px auto' }}><Line data={data} options={options} /></div>;
+    // The container div will control the size. A height is needed for maintainAspectRatio: false.
+    return <div style={{ position: 'relative', height: '40vh', minHeight: '300px' }}><Line data={data} options={options} /></div>;
 };
 
 export default SensorGraph;

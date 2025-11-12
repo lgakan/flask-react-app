@@ -118,7 +118,7 @@ def update_sensor(sensor_id):
 
 
 @app.route("/delete_sensor/<int:sensor_id>", methods=["DELETE"])
-@jwt_required()
+# @jwt_required()
 def delete_sensor(sensor_id):
     sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
     db.session.delete(sensor)
@@ -180,7 +180,7 @@ def update_sensor_data(data_id):
 
 
 @app.route("/sensor_data/<int:data_id>", methods=["DELETE"])
-@jwt_required()
+@jwt_required(locations=["headers"])
 def delete_sensor_data(data_id):
     data_point = SensorData.query.get_or_404(data_id, description="Data point not found")
     db.session.delete(data_point)

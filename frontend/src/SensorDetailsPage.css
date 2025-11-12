@@ -1,0 +1,86 @@
+/* ===================================== */
+/*       SensorDetailsPage Styles        */
+/* ===================================== */
+
+.page-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.page-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sensor-graph-container {
+  width: 100%;
+  margin: 2.5rem 0;
+  padding: 1.5rem;
+  background-color: var(--surface-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+}
+
+/* ===================================== */
+/*          Modal Styles                 */
+/* ===================================== */
+
+.modal {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: var(--surface-color);
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ===================================== */
+/*          Media Queries                */
+/* ===================================== */
+
+@media (max-width: 768px) {
+  /* No specific changes needed if using the global .container class */
+}
+
+@media print {
+  .no-print, .modal {
+    display: none !important;
+  }
+}

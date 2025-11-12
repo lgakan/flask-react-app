@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SensorGraph from './SensorGraph';
 import DataPointForm from './DataPointForm';
-import './print.css'; // Import print-specific styles
+import './SensorDetailsPage.css'; // Import component-specific styles
 import { useAuth } from './context/AuthContext';
 
 const SensorDetailsPage = () => {
@@ -88,12 +88,16 @@ const SensorDetailsPage = () => {
                 <Link to="/">Back to Sensor List</Link>
                 <button onClick={handlePrint}>Print</button>
             </div>
-            <h2>{sensorDetails.name} ({sensorDetails.ipAddress})</h2>
-            <p>Owner: {sensorDetails.ownerName}</p>
-            <SensorGraph dataPoints={sensorDetails.dataPoints || []} onPointClick={openEditModal} />
+            <div className="page-header">
+                <h2>{sensorDetails.name} ({sensorDetails.ipAddress})</h2>
+                <p>Owner: {sensorDetails.ownerName}</p>
+            </div>
+            <div className="sensor-graph-container">
+                <SensorGraph dataPoints={sensorDetails.dataPoints || []} onPointClick={openEditModal} />
+            </div>
 
             {isAuthenticated && (
-                <button onClick={openCreateModal} className="no-print">Add New Data Point</button>
+                <button onClick={openCreateModal} className="no-print button-primary">Add New Data Point</button>
             )}
 
             {isModalOpen && ( // The modal itself should not be printed

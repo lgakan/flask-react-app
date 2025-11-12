@@ -4,3 +4,4 @@ SQLAlchemy
 Werkzeug
 flask-cors
 flask-jwt-extended
+python-dotenv
