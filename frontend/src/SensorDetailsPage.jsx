@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SensorGraph from './SensorGraph';
 import DataPointForm from './DataPointForm';
+import './print.css'; // Import print-specific styles
 import { useAuth } from './context/AuthContext';
 
 const SensorDetailsPage = () => {
@@ -71,6 +72,10 @@ const SensorDetailsPage = () => {
         }
     };
 
+    const handlePrint = () => {
+        window.print();
+    };
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
@@ -79,14 +84,19 @@ const SensorDetailsPage = () => {
 
     return (
         <div>
-            <Link to="/">Back to Sensor List</Link>
+            <div className="no-print page-controls">
+                <Link to="/">Back to Sensor List</Link>
+                <button onClick={handlePrint}>Print</button>
+            </div>
             <h2>{sensorDetails.name} ({sensorDetails.ipAddress})</h2>
             <p>Owner: {sensorDetails.ownerName}</p>
             <SensorGraph dataPoints={sensorDetails.dataPoints || []} onPointClick={openEditModal} />
 
-            {isAuthenticated && <button onClick={openCreateModal}>Add New Data Point</button>}
+            {isAuthenticated && (
+                <button onClick={openCreateModal} className="no-print">Add New Data Point</button>
+            )}
 
-            {isModalOpen && (
+            {isModalOpen && ( // The modal itself should not be printed
                 <div className="modal">
                     <div className="modal-content">
                         <span className="close" onClick={closeModal}>&times;</span>
