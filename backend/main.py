@@ -16,7 +16,6 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 jwt = JWTManager(app)
 
-
 # --- Public Routes ---
 @app.route("/sensors", methods=["GET"])
 def get_sensors():
@@ -67,8 +66,8 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     if user and user.check_password(password):
-        access_token = create_access_token(identity=user.id)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
         return jsonify(accessToken=access_token, refreshToken=refresh_token, user=user.to_json())
 
     return jsonify({"message": "Invalid username or password"}), 401
@@ -84,7 +83,7 @@ def refresh():
 
 # --- Protected Routes ---
 @app.route("/create_sensor", methods=["POST"])
-@jwt_required()
+@jwt_required(locations=["headers"])
 def create_sensor():
     current_user_id = get_jwt_identity()
     name = request.json.get("name")
@@ -105,7 +104,7 @@ def create_sensor():
 
 
 @app.route("/update_sensor/<int:sensor_id>", methods=["PATCH"])
-@jwt_required()
+@jwt_required(locations=["headers"])
 def update_sensor(sensor_id):
     sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
     data = request.json
@@ -118,7 +117,7 @@ def update_sensor(sensor_id):
 
 
 @app.route("/delete_sensor/<int:sensor_id>", methods=["DELETE"])
-# @jwt_required()
+@jwt_required(locations=["headers"])
 def delete_sensor(sensor_id):
     sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
     db.session.delete(sensor)
@@ -128,7 +127,7 @@ def delete_sensor(sensor_id):
 
 
 @app.route("/sensor_data", methods=["POST"])
-@jwt_required()
+@jwt_required(locations=["headers"])
 def create_sensor_data():
     sensor_id = request.json.get("sensorId")
     temperature = request.json.get("temperature")
@@ -165,7 +164,7 @@ def create_sensor_data():
 
 
 @app.route("/sensor_data/<int:data_id>", methods=["PATCH"])
-@jwt_required()
+@jwt_required(locations=["headers"])
 def update_sensor_data(data_id):
     data_point = SensorData.query.get_or_404(data_id, description="Data point not found")
     data = request.json

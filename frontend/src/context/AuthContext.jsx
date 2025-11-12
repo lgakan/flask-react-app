@@ -1,58 +1,109 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 
+const API_BASE_URL = 'http://127.0.0.1:5000';
+
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(localStorage.getItem('token'));
+    const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
+    const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken'));
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     useEffect(() => {
-        if (token) {
-            localStorage.setItem('token', token);
+        if (accessToken) {
+            localStorage.setItem('accessToken', accessToken);
         } else {
-            localStorage.removeItem('token');
+            localStorage.removeItem('accessToken');
+        }
+        if (refreshToken) {
+            localStorage.setItem('refreshToken', refreshToken);
+        } else {
+            localStorage.removeItem('refreshToken');
         }
         if (user) {
             localStorage.setItem('user', JSON.stringify(user));
         } else {
             localStorage.removeItem('user');
         }
-    }, [token, user]);
+    }, [accessToken, refreshToken, user]);
 
-    const login = (newToken, userData) => {
-        setToken(newToken);
+    const login = (newAccessToken, newRefreshToken, userData) => {
+        setAccessToken(newAccessToken);
+        setRefreshToken(newRefreshToken);
         setUser(userData);
     };
 
-    const logout = () => {
-        setToken(null);
+    const logout = useCallback(() => {
+        setAccessToken(null);
+        setRefreshToken(null);
         setUser(null);
-    };
+        window.location.href = '/login';
+    }, []);
 
-    const authFetch = async (url, options = {}) => {
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers,
+    const authFetch = useCallback(async (url, options = {}) => {
+        // A function to perform the actual fetch with a given token
+        const performFetch = async (token) => {
+            const headers = { ...options.headers };
+
+            if (options.body) {
+                headers['Content-Type'] = 'application/json';
+            }
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            return fetch(url, { ...options, headers });
         };
 
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
+        let response = await performFetch(accessToken);
+
+        if (response.status === 401 && !isRefreshing) {
+            setIsRefreshing(true);
+            try {
+                // Attempt to refresh the token
+                const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${refreshToken}`
+                    }
+                });
+
+                if (!refreshResponse.ok) {
+                    // If refresh fails, logout the user
+                    throw new Error('Failed to refresh token');
+                }
+
+                const { accessToken: newAccessToken } = await refreshResponse.json();
+                setAccessToken(newAccessToken);
+
+                // Retry the original request with the new token
+                response = await performFetch(newAccessToken);
+
+            } catch (error) {
+                console.error("Session refresh failed:", error);
+                logout(); // Logout on refresh failure
+                // Return the original failed response to avoid breaking the calling component
+                return response;
+            } finally {
+                setIsRefreshing(false);
+            }
         }
 
-        const response = await fetch(url, { ...options, headers });
-
-        if (response.status === 401) {
-            // Token is invalid or expired, log the user out
-            logout();
-            // Optionally redirect to login page
-            window.location.href = '/login';
-        }
         return response;
-    };
+    }, [accessToken, refreshToken, isRefreshing, logout]);
 
-    const value = { token, user, login, logout, authFetch, isAuthenticated: !!token };
+    const value = {
+        accessToken,
+        user,
+        login,
+        logout,
+        authFetch,
+        isAuthenticated: !!accessToken
+    };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -26,7 +26,7 @@ const LoginPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                auth.login(data.accessToken, data.user); // THIS IS THE CRUCIAL CALL
+                auth.login(data.accessToken, data.refreshToken, data.user); // THIS IS THE CRUCIAL CALL
                 navigate('/'); // Redirect to home page on successful login
             } else {
                 setError(data.message || 'Login failed');

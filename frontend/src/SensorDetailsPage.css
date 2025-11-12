@@ -26,6 +26,17 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Style for the secondary back button */
+.button-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+  border-color: var(--secondary-color);
+}
+
+.button-secondary:hover {
+  background-color: #5a6268; /* A darker shade of the secondary color */
+  border-color: #545b62;
+}
 /* ===================================== */
 /*          Modal Styles                 */
 /* ===================================== */

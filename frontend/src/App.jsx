@@ -48,8 +48,8 @@ const HomePage = () => {
 
   return (
     <div className="home-page-content">
-      <SensorList sensors={sensors} updateSensor={openEditModal} updateCallback={onUpdate} />
       {isAuthenticated && <button onClick={openCreateModal} className="button-primary">Create New Sensor</button>}
+      <SensorList sensors={sensors} updateSensor={openEditModal} updateCallback={onUpdate} />
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">

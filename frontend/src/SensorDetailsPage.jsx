@@ -85,7 +85,9 @@ const SensorDetailsPage = () => {
     return (
         <div>
             <div className="no-print page-controls">
-                <Link to="/">Back to Sensor List</Link>
+                <Link to="/">
+                    <button className="button-secondary">&larr; Back to Sensor List</button>
+                </Link>
                 <button onClick={handlePrint}>Print</button>
             </div>
             <div className="page-header">
