@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useAuth } from "./context/AuthContext";
+import "./Form.css"; // Import shared form styles
 
 const SensorForm = ({ existingSensor = {}, updateCallback }) => {
     const [name, setName] = useState(existingSensor.name || "");
     const [ipAddress, setIpAddress] = useState(existingSensor.ipAddress || "");
 
     const isUpdating = Object.keys(existingSensor).length > 0;
+    const { authFetch } = useAuth();
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -21,7 +24,7 @@ const SensorForm = ({ existingSensor = {}, updateCallback }) => {
             },
             body: JSON.stringify(data)
         }
-        const response = await fetch(url, options)
+        const response = await authFetch(url, options)
         if (response.status !== 201 && response.status !== 200) {
             const data = await response.json()
             alert(data.message)
@@ -31,26 +34,29 @@ const SensorForm = ({ existingSensor = {}, updateCallback }) => {
     }
 
     return (
-        <form onSubmit={onSubmit}>
-            <div>
+        <form onSubmit={onSubmit} className="form-container">
+            <h3>{isUpdating ? "Update Sensor" : "Create New Sensor"}</h3>
+            <div className="form-group">
                 <label htmlFor="name">Sensor Name:</label>
                 <input
                     type="text"
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    required
                 />
             </div>
-            <div>
+            <div className="form-group">
                 <label htmlFor="ipAddress">IP Address:</label>
                 <input
                     type="text"
                     id="ipAddress"
                     value={ipAddress}
                     onChange={(e) => setIpAddress(e.target.value)}
+                    required
                 />
             </div>
-            <button type="submit">{isUpdating ? "Update" : "Create"}</button>
+            <button type="submit" className="button-primary">{isUpdating ? "Update" : "Create"}</button>
         </form>
     );
 };
