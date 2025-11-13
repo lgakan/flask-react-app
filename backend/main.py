@@ -5,8 +5,8 @@ from utils.db_setup import seed_database
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
 from datetime import timedelta
-from routes.sensor_routes import sensor_bp
-from routes.auth_routes import auth_bp
+from .routes.sensor_routes import sensor_bp
+from .routes.auth_routes import auth_bp
 
 # Load environment variables
 from dotenv import load_dotenv

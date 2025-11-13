@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import Sensor, SensorData, db
+from ..models import Sensor, SensorData, db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 sensor_bp = Blueprint('sensor_bp', __name__)

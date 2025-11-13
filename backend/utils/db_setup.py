@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta, timezone
-from config import app, db
-from models import User, Sensor, SensorData
+from ..config import app, db
+from ..models import User, Sensor, SensorData
 
 
 def seed_database():
