@@ -38,8 +38,8 @@ const SensorList = ({ sensors, updateSensor, updateCallback }) => {
                             <td>{sensor.name}</td>
                             <td>{sensor.ipAddress}</td>
                             {/* Use a flex container to keep buttons in a row on small screens */}
-                            <td style={{ whiteSpace: 'nowrap' }}>
-                                <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                            <td>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'stretch' }}>
                                     <Link to={`/details_sensor/${sensor.id}`}>
                                         <button>Details</button>
                                     </Link>
