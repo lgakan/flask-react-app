@@ -1,11 +1,16 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
+
+# Get allowed origins from environment variable, with a fallback for local development
+CORS_ORIGINS = "https://flask-react-app-frontend.onrender.com"
+
 CORS(app, resources={
      r"/*": {
-         "origins": ["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173"],
+         "origins": CORS_ORIGINS,
          "supports_credentials": True,
          "allow_headers": ["Content-Type", "Authorization"]
      }
