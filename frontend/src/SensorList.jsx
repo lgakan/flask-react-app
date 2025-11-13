@@ -21,8 +21,8 @@ const SensorList = ({ sensors, updateSensor, updateCallback }) => {
         }
     }
 
-    return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div>
+    return <div style={{ width: '100%', padding: '0 1rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <h2>Sensors</h2>
             {/* This wrapper div makes the table scroll horizontally on small screens */}
             <div style={{ width: '100%', overflowX: 'auto' }}>
