@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
             if (options.body) {
                 headers['Content-Type'] = 'application/json';
             }
-
+            console.log(token)
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
