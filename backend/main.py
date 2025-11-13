@@ -1,7 +1,7 @@
 import os
 from .config import app, db
 from .models import Sensor, User
-from utils.db_setup import seed_database
+from .utils.db_setup import seed_database
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
 from datetime import timedelta
