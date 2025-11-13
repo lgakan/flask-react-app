@@ -1,6 +1,6 @@
-from backend.main import app
-from backend.models import db, Sensor
-from backend.utils.db_setup import seed_database
+from main import app
+from models import db, Sensor
+from utils.db_setup import seed_database
 
 
 def initialize_database():
