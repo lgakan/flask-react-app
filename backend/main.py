@@ -45,14 +45,14 @@ swagger = Swagger(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(sensor_bp)
 
-if __name__ == "__main__":
-    with app.app_context():
-        # Create tables if they don't exist
-        db.create_all()
 
-        # Check if the database is empty (by checking for sensors)
-        if Sensor.query.count() == 0:
-            print("Sensor table is empty. Seeding database with initial data...")
-            seed_database()
-
-    app.run(debug=True)
+@app.cli.command("init-db")
+def init_db_command():
+    """Creates the database tables and seeds initial data."""
+    db.create_all()
+    print("Initialized the database.")
+    # Check if the database is empty (by checking for sensors)
+    if Sensor.query.count() == 0:
+        print("Seeding database with initial data...")
+        seed_database()
+        print("Database seeded.")
