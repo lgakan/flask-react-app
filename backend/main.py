@@ -8,11 +8,9 @@ from datetime import timedelta
 from routes.sensor_routes import sensor_bp
 from routes.auth_routes import auth_bp
 
-# Load environment variables
 from dotenv import load_dotenv
 load_dotenv()
 
-# Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "default-super-secret-key-for-dev")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
@@ -37,22 +35,16 @@ app.config['SWAGGER'] = {
         }
     ]
 }
-
-# Initialize Flasgger
 swagger = Swagger(app)
 
-# Register Blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(sensor_bp)
 
 if __name__ == "__main__":
     with app.app_context():
-        # Create tables if they don't exist
         db.create_all()
-
-        # Check if the database is empty (by checking for sensors)
         if Sensor.query.count() == 0:
             print("Sensor table is empty. Seeding database with initial data...")
             seed_database()
 
-    app.run(debug=True)
+    app.run(debug=True, host="127.0.0.1", port=5000)

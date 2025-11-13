@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../AuthForm.css'; // Import the shared auth form styles
+import '../AuthForm.css';
 
 const RegisterPage = () => {
     const [username, setUsername] = useState('');
@@ -30,7 +30,6 @@ const RegisterPage = () => {
 
             if (response.ok) {
                 setSuccess(data.message || 'Registration successful! Please log in.');
-                // Optionally clear form or redirect after a short delay
                 setTimeout(() => navigate('/login'), 2000);
             } else {
                 setError(data.message || 'Registration failed');

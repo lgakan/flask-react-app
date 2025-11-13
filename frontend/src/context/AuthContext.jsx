@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const authFetch = useCallback(async (url, options = {}) => {
-        // A function to perform the actual fetch with a given token
         const performFetch = async (token) => {
             const headers = { ...options.headers };
 
@@ -63,7 +62,6 @@ export const AuthProvider = ({ children }) => {
         if (response.status === 401 && !isRefreshing) {
             setIsRefreshing(true);
             try {
-                // Attempt to refresh the token
                 const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
                     method: 'POST',
                     headers: {
@@ -73,20 +71,16 @@ export const AuthProvider = ({ children }) => {
                 });
 
                 if (!refreshResponse.ok) {
-                    // If refresh fails, logout the user
                     throw new Error('Failed to refresh token');
                 }
 
                 const { accessToken: newAccessToken } = await refreshResponse.json();
                 setAccessToken(newAccessToken);
-
-                // Retry the original request with the new token
                 response = await performFetch(newAccessToken);
 
             } catch (error) {
                 console.error("Session refresh failed:", error);
-                logout(); // Logout on refresh failure
-                // Return the original failed response to avoid breaking the calling component
+                logout();
                 return response;
             } finally {
                 setIsRefreshing(false);

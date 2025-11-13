@@ -17,7 +17,6 @@ const SensorDetailsPage = () => {
     // Use useCallback to prevent re-creating the function on every render
     const fetchDetails = React.useCallback(async () => {
         try {
-            // Reset states for re-fetching
             setLoading(true);
             setError(null);
             const response = await fetch(`http://127.0.0.1:5000/details_sensor/${sensorId}`);
@@ -79,7 +78,6 @@ const SensorDetailsPage = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    // Don't render the component until the data has been fetched.
     if (!sensorDetails) return null;
 
     return (

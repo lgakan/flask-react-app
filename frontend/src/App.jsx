@@ -10,7 +10,6 @@ import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
-// The logic from your old App.jsx is now the HomePage
 const HomePage = () => {
   const [sensors, setSensors] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -64,7 +63,6 @@ const HomePage = () => {
 }
 
 function App() {
-  // This is the main component that orchestrates the routing.
   return (
     <AuthProvider>
       <Router>

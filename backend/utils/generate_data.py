@@ -21,10 +21,10 @@ def generate_new_data_points():
         for sensor in sensors:
             new_data = SensorData(
                 sensor_id=sensor.id,
-                temperature=round(random.uniform(15.0, 30.0), 2),  # Celsius
-                humidity=round(random.uniform(30.0, 60.0), 2),     # %
-                pressure=round(random.uniform(980.0, 1050.0), 2),  # hPa
-                light_level=round(random.uniform(100, 1000), 2),   # lux
+                temperature=round(random.uniform(15.0, 30.0), 2),
+                humidity=round(random.uniform(30.0, 60.0), 2),
+                pressure=round(random.uniform(980.0, 1050.0), 2),
+                light_level=round(random.uniform(100, 1000), 2),
             )
             new_data_points.append(new_data)
         db.session.add_all(new_data_points)

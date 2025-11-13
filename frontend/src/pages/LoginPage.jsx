@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../AuthForm.css'; // Import the shared auth form styles
+import '../AuthForm.css';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -12,7 +12,7 @@ const LoginPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(''); // Clear previous errors
+        setError('');
 
         try {
             const response = await fetch('http://127.0.0.1:5000/login', {
@@ -26,8 +26,8 @@ const LoginPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                auth.login(data.accessToken, data.refreshToken, data.user); // THIS IS THE CRUCIAL CALL
-                navigate('/'); // Redirect to home page on successful login
+                auth.login(data.accessToken, data.refreshToken, data.user);
+                navigate('/');
             } else {
                 setError(data.message || 'Login failed');
             }

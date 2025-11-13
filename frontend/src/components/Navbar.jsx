@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../App.css'; // Import App-wide styles for header/nav
+import '../App.css';
 
 const Navbar = () => {
     const { isAuthenticated, logout, user } = useAuth();
@@ -9,7 +9,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login'); // Redirect to login page after logout
+        navigate('/login');
     };
 
     return (

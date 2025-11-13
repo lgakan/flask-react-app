@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './context/AuthContext';
-import "./Form.css"; // Import shared form styles
+import "./Form.css";
 
 // Helper to format a Date object into a string suitable for datetime-local input (YYYY-MM-DDTHH:mm)
 const formatDateTimeForInput = (date) => {
@@ -68,7 +68,7 @@ const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
             pressure: pres,
             lightLevel: light,
             sensorId: sensorId,
-            timestamp: new Date(timestamp).toISOString(), // Send timestamp in standard ISO format
+            timestamp: new Date(timestamp).toISOString(),
         };
 
         const url = "http://127.0.0.1:5000/" + (isUpdating ? `sensor_data/${existingData.id}` : "sensor_data");
@@ -84,7 +84,7 @@ const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
             const responseData = await response.json();
             alert(responseData.message);
         } else {
-            updateCallback(); // Refresh the data on the details page
+            updateCallback();
         }
     };
 

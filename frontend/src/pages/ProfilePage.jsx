@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import '../AuthForm.css'; // Reusing some styles
-import '../print.css'; // For printing
+import '../AuthForm.css';
+import '../print.css';
 
 const ProfilePage = () => {
     const { authFetch, user, logout } = useAuth();
