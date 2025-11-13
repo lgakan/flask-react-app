@@ -19,7 +19,7 @@ const SensorDetailsPage = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch(`http://127.0.0.1:5000/details_sensor/${sensorId}`);
+            const response = await fetch(`https://flask-react-app-backend.onrender.com/details_sensor/${sensorId}`);
             if (!response.ok) {
                 throw new Error('Sensor not found');
             }
@@ -60,7 +60,7 @@ const SensorDetailsPage = () => {
 
     const deleteDataPoint = async (dataId) => {
         if (window.confirm("Are you sure you want to delete this data point?")) {
-            const url = `http://127.0.0.1:5000/sensor_data/${dataId}`;
+            const url = `https://flask-react-app-backend.onrender.com/sensor_data/${dataId}`;
             const response = await authFetch(url, { method: "DELETE" });
             if (response.status === 200) {
                 onDataUpdate();

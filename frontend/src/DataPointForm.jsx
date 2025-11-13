@@ -71,7 +71,7 @@ const DataPointForm = ({ existingData = {}, sensorId, updateCallback }) => {
             timestamp: new Date(timestamp).toISOString(),
         };
 
-        const url = "http://127.0.0.1:5000/" + (isUpdating ? `sensor_data/${existingData.id}` : "sensor_data");
+        const url = "https://flask-react-app-backend.onrender.com/" + (isUpdating ? `sensor_data/${existingData.id}` : "sensor_data");
         const options = {
             method: isUpdating ? "PATCH" : "POST",
             headers: {

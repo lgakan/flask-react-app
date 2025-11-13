@@ -22,7 +22,7 @@ const ProfilePage = () => {
         }
 
         try {
-            const response = await authFetch('http://127.0.0.1:5000/change_password', {
+            const response = await authFetch('https://flask-react-app-backend.onrender.com/change_password', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
