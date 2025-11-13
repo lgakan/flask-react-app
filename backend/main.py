@@ -39,12 +39,3 @@ swagger = Swagger(app)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(sensor_bp)
-
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-        if Sensor.query.count() == 0:
-            print("Sensor table is empty. Seeding database with initial data...")
-            seed_database()
-
-    app.run()
