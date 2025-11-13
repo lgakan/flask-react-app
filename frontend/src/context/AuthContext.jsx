@@ -3,8 +3,8 @@ import React, { createContext, useState, useContext, useEffect, useCallback } fr
 const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000';
+ 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
             setIsRefreshing(true);
             try {
                 // Attempt to refresh the token
-                const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+                const refreshResponse = await fetch(`/refresh`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
