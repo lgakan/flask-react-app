@@ -37,14 +37,17 @@ const SensorList = ({ sensors, updateSensor, updateCallback }) => {
                         <tr key={sensor.id}>
                             <td>{sensor.name}</td>
                             <td>{sensor.ipAddress}</td>
-                            <td>
-                                <Link to={`/details_sensor/${sensor.id}`}>
-                                    <button>Details</button>
-                                </Link>
-                                {isAuthenticated && <>
-                                    <button onClick={() => updateSensor(sensor)}>Update</button>
-                                    <button onClick={() => onDelete(sensor.id)}>Delete</button>
-                                </>}
+                            {/* Use a flex container to keep buttons in a row on small screens */}
+                            <td style={{ whiteSpace: 'nowrap' }}>
+                                <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                                    <Link to={`/details_sensor/${sensor.id}`}>
+                                        <button>Details</button>
+                                    </Link>
+                                    {isAuthenticated && <>
+                                        <button onClick={() => updateSensor(sensor)}>Update</button>
+                                        <button onClick={() => onDelete(sensor.id)}>Delete</button>
+                                    </>}
+                                </div>
                             </td>
                         </tr>
                     ))}
