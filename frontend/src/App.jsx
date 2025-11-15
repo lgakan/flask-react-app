@@ -21,7 +21,7 @@ const HomePage = () => {
   }, []);
 
   const fetchSensors = async () => {
-    const response = await fetch("http://127.0.0.1:5000/sensors");
+    const response = await fetch("https://flask-react-app-backend.onrender.com/sensors");
     const data = await response.json(); 
     setSensors(data.sensors);
   };

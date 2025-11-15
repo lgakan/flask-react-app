@@ -16,7 +16,7 @@ const SensorForm = ({ existingSensor = {}, updateCallback }) => {
             name,
             ipAddress
         }
-        const url = "http://127.0.0.1:5000/" + (isUpdating ? `update_sensor/${existingSensor.id}` : "create_sensor")
+        const url = "https://flask-react-app-backend.onrender.com/" + (isUpdating ? `update_sensor/${existingSensor.id}` : "create_sensor")
         const options = {
             method: isUpdating ? "PATCH" : "POST",
             headers: {

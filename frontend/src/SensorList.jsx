@@ -9,7 +9,7 @@ const SensorList = ({ sensors, updateSensor, updateCallback }) => {
             const options = {
                 method: "DELETE"
             }
-            const response = await authFetch(`http://127.0.0.1:5000/delete_sensor/${id}`, options)
+            const response = await authFetch(`https://flask-react-app-backend.onrender.com/delete_sensor/${id}`, options)
             if (response.status === 200) {
                 updateCallback()
             } else {
