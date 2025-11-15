@@ -74,8 +74,7 @@ def details_sensor(sensor_id):
     """
     sensor = Sensor.query.get_or_404(sensor_id, description="Sensor not found")
     sensor_details = sensor.to_json()
-    # Order data points by timestamp for consistency
-    data_points = sorted(sensor.data_points, key=lambda dp: dp.timestamp)
+    data_points = SensorData.query.filter_by(sensor_id=sensor_id).order_by(SensorData.timestamp.asc()).all()
     sensor_details["dataPoints"] = [data.to_json() for data in data_points]
     sensor_details["ownerName"] = f"{sensor.owner.first_name} {sensor.owner.last_name}"
     return jsonify(sensor_details), 200
