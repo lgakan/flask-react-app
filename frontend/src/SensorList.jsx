@@ -21,35 +21,40 @@ const SensorList = ({ sensors, updateSensor, updateCallback }) => {
         }
     }
 
-    return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div>
+    return <div style={{ width: '100%', padding: '0 1rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <h2>Sensors</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>IP Address</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {sensors.map((sensor) => (
-                        <tr key={sensor.id}>
-                            <td>{sensor.name}</td>
-                            <td>{sensor.ipAddress}</td>
-                            <td>
-                                <Link to={`/details_sensor/${sensor.id}`}>
-                                    <button>Details</button>
-                                </Link>
-                                {isAuthenticated && <>
-                                    <button onClick={() => updateSensor(sensor)}>Update</button>
-                                    <button onClick={() => onDelete(sensor.id)}>Delete</button>
-                                </>}
-                            </td>
+            {/* This wrapper div makes the table scroll horizontally on small screens */}
+            <div style={{ width: '100%', overflowX: 'auto' }}>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>IP Address</th>
+                            <th>Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {sensors.map((sensor) => (
+                            <tr key={sensor.id}>
+                                <td>{sensor.name}</td>
+                                <td>{sensor.ipAddress}</td>
+                                <td style={{ whiteSpace: 'nowrap' }}>
+                                    <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                                        <Link to={`/details_sensor/${sensor.id}`}>
+                                            <button>Details</button>
+                                        </Link>
+                                        {isAuthenticated && <>
+                                            <button onClick={() => updateSensor(sensor)}>Update</button>
+                                            <button onClick={() => onDelete(sensor.id)}>Delete</button>
+                                        </>}
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 }
