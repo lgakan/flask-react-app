@@ -54,8 +54,10 @@ def register():
     if not all([username, password, first_name, last_name, email]):
         return jsonify({"message": "All fields are required"}), 400
 
-    if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
-        return jsonify({"message": "Username or email already exists"}), 400
+    if User.query.filter_by(username=username).first():
+        return jsonify({"message": "Username already exists"}), 400
+    if User.query.filter_by(email=email).first():
+        return jsonify({"message": "Email already exists"}), 400
 
     new_user = User(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
     db.session.add(new_user)
